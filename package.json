@@ -1,0 +1,11 @@
+{
+  "name": "ad-inventory",
+  "version": "1.0.0",
+  "description": "A simple inventory display for Active Directory computers",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Christopher Adatan",
+  "license": "ISC"
+}
