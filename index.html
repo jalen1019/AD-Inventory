@@ -4,14 +4,84 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src-elem 'self' https://*.jsdelivr.net; style-src-elem 'self' cdn.jsdelivr.net; img-src 'self' data: *.w3.org">
     <title>AD Inventory</title>
   </head>
   <body>
     <h1>Active Directory Inventory</h1>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecord">Add device</button>
+
+    <div class="modal fade" id="addRecord" tabindex="-1" aria-labelledby="newDeviceModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="newDeviceModalLabel">New device</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="deviceName" class="col-form-label">Previous User</label>
+                <input type="text" class="form-control" id="previousUser" placeholder="Previous User" autocomplete="off" required>
+              </div>
+              <div class="mb-3">
+                <label for="currentUser" class="col-form-label">Current User</label>
+                <input type="text" class="form-control" id="currentUser" placeholder="Current User" autocomplete="off" required>
+              </div>
+              <div class="mb-3">
+                <label for="computerName" class="col-form-label">Computer Name</label>
+                <input type="text" class="form-control" id="computerName" placeholder="Computer Name" autocomplete="off" required>
+              </div>
+              <div class="mb-3">
+                  <label for="modelName" class="col-form-label">Model</label>
+                  <input type="text" class="form-control" id="modelName" placeholder="Model" autocomplete="off"" required>
+              </div>
+              <div class="mb-3">
+                <label for="cpuModel" class="col-form-label">CPU</label>
+                <input type="text" class="form-control" id="cpuModel" placeholder="CPU" autocomplete="off"" required>
+              </div>
+              <div class="mb-3">
+               <label for="ramSize" class="col-form-label">RAM</label>
+                <input type="text" class="form-control" id="modelName" placeholder="RAM" autocomplete="off"" required>
+              </div>
+              <div class="mb-3">
+               <label for="storage" class="col-form-label">Storage Size</label>
+               <input type="text" class="form-control" id="storage" placeholder="Storage" autocomplete="off"" required>
+              </div>
+              <div class="mb-3">
+                <label for="storageType" class="col-form-label">Disk Type</label>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" name="storageTypeRadio" id="ssdRadio">
+                  <label class="form-check-label" for="ssdRadio">SSD</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" name="storageTypeRadio" id="hddRadio" checked>
+                  <label class="form-check-label" for="hddRadio">HDD</label>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <table class="table">
       <thead>
-        <tr id="table-header-row"></tr>
+        <tr id="table-header-row">
+          <th scope="col">Previous User</th>
+          <th scope="col">Current User</th>
+          <th scope="col">Computer Name</th>
+          <th scope="col">Model</th>
+          <th scope="col">CPU</th>
+          <th scope="col">RAM</th>
+          <th scope="col">Storage</th>
+          <th scope="col">Storage Type</th>
+          <th scope="col">Monitors</th>
+        </tr>
       </thead>
       <tbody id="table-body"></tbody>
     </table>
@@ -19,5 +89,6 @@
     Chromium <span id="chrome-version"></span>,
     and Electron <span id="electron-version"></span>.
     <script type="text/javascript" src="./renderer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   </body>
 </html>
