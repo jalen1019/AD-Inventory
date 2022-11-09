@@ -1,7 +1,7 @@
 // main.js
 
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 
 const createWindow = () => {
@@ -43,3 +43,56 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+// Initialize the database
+const Store = require('electron-store');
+
+const schema = {
+  computer: {
+    type: 'object',
+    properties: {
+      previousUser: {
+        type: 'string'
+      },
+      currentUser: {
+        type: 'string'
+      },
+      name: {
+        type: 'string'
+      },
+      model: {
+        type: 'string'
+      },
+      cpu: {
+        type: 'string'
+      },
+      ram: {
+        type: 'number'
+      },
+      storage: {
+        type: 'number'
+      },
+      storage_type: {
+        'enum': ['SSD', 'HDD']
+      },
+      monitor: {
+        type: 'object',
+        properties: {
+          monitor_count: {
+            type: 'integer', 
+            default: 1
+          },
+          monitor_size: {
+            type: 'integer'
+          }
+        }
+      }
+    }
+  }
+}
+
+const store = new Store({schema});
+
+// Add handlers for ipcRenderer events
+ipcMain.handle('electron-store-set', (key, value) => { store.set(key, value) });
+ipcMain.handle('electron-store-get', (key) => { store.get(key) });
