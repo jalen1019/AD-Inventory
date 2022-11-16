@@ -50,5 +50,6 @@ document.getElementById('submitBtn').addEventListener('click', () => {
         const computerObjectStore = transaction.objectStore("computers");
     
         computerObjectStore.add(computer);
+        location.reload();
     };
 });
