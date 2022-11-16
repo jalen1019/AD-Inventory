@@ -51,7 +51,7 @@
               </div>
               <div class="mb-3">
                 <label for="ramSize" class="col-form-label">RAM</label>
-                <input type="text" class="form-control" id="modelName" placeholder="RAM" autocomplete="off"" required>
+                <input type="text" class="form-control" id="ramSize" placeholder="RAM" autocomplete="off"" required>
                 <div class="invalid-feedback">
                   Please provide a RAM size.
                 </div>
@@ -74,11 +74,17 @@
                   </div>
                 </select>
               </div>
+              <div class="mb-3">
+                <label for="monitorCount" class="col-form-label">Monitor Count</label>
+                <input type="number" class="form-control" id="monitorCount" placeholder="Monitor Count" autocomplete="off"">
+                <div class="invalid-feedback">
+                  Please provide a monitor count.
+               </div>
             </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" form="addDeviceForm" class="btn btn-primary">Save</button>
+            <button type="button" id="submitBtn" form="addDeviceForm" class="btn btn-primary">Save</button>
           </div>
         </div>
       </div>
@@ -103,7 +109,7 @@
     We are using Node.js <span id="node-version"></span>,
     Chromium <span id="chrome-version"></span>,
     and Electron <span id="electron-version"></span>.
-    <script type="text/javascript" src="./renderer.js"></script>
+    <script type="module" src="./renderer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   </body>
 </html>
