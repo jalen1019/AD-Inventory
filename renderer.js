@@ -19,6 +19,8 @@
       })
 })();
 
+
+// Event listener for computer submission
 document.getElementById('submitBtn').addEventListener('click', () => {
     const request = indexedDB.open("ComputerDatabase", 1);
     let db;

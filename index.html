@@ -9,7 +9,24 @@
   </head>
   <body>
     <h1>Active Directory Inventory</h1>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecord">Add device</button>
+    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#addRecord">Add device</button>
+
+    <table class="table">
+      <thead>
+        <tr id="table-header-row">
+          <th scope="col">Previous User</th>
+          <th scope="col">Current User</th>
+          <th scope="col">Computer Name</th>
+          <th scope="col">Model</th>
+          <th scope="col">CPU</th>
+          <th scope="col">RAM</th>
+          <th scope="col">Storage</th>
+          <th scope="col">Storage Type</th>
+          <th scope="col">Monitors</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
 
     <div class="modal fade" id="addRecord" tabindex="-1" aria-labelledby="newDeviceModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -89,26 +106,6 @@
         </div>
       </div>
     </div>
-
-    <table class="table">
-      <thead>
-        <tr id="table-header-row">
-          <th scope="col">Previous User</th>
-          <th scope="col">Current User</th>
-          <th scope="col">Computer Name</th>
-          <th scope="col">Model</th>
-          <th scope="col">CPU</th>
-          <th scope="col">RAM</th>
-          <th scope="col">Storage</th>
-          <th scope="col">Storage Type</th>
-          <th scope="col">Monitors</th>
-        </tr>
-      </thead>
-      <tbody id="table-body"></tbody>
-    </table>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
     <script type="module" src="./renderer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   </body>
