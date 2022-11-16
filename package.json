@@ -10,6 +10,6 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^21.2.2",
-    "electron-store": "^8.1.0"
+    "selenium-webdriver": "^4.6.1"
   }
 }
