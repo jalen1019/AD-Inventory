@@ -8,12 +8,19 @@
     <title>AD Inventory</title>
   </head>
   <body>
-    <h1>Active Directory Inventory</h1>
-    <button type="button" class="btn btn-primary float-end me-3" data-bs-toggle="modal" data-bs-target="#addRecord">Add device</button>
+    <div class="d-flex mb-3 me-3">
+      <div class="me-auto">
+        <h1>Active Directory Inventory</h1>
+      </div>
+      <div>
+        <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addRecord">Add device</button>
+      </div>
+    </div>
 
-    <table class="table table-sm table-bordered text-center">
+    <table class="table table-sm table-striped text-center">
       <thead>
         <tr id="table-header-row">
+          <th scope="col"></th>
           <th scope="col">Previous User</th>
           <th scope="col">Current User</th>
           <th scope="col">Computer Name</th>
