@@ -3,8 +3,8 @@
 
 const { contextBridge, ipcRenderer } = require('electron')
 // Expose Computer API 
-contextBridge.exposeInMainWorld('computer', {
-
+contextBridge.exposeInMainWorld('tableData', {
+  loaded: false,
 })
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -51,9 +51,10 @@ window.addEventListener('DOMContentLoaded', () => {
       let tableBody = document.querySelector('#table-body');
 
       // Populate table with information
-      console.log(request.result);
       request.result.forEach(element => {
+        // Set up table row and cells for population
         let row = tableBody.insertRow();
+        let editGroupCell = row.insertCell();
         let previousUser = row.insertCell();
         let currentUser = row.insertCell();
         let computerName = row.insertCell();
@@ -64,6 +65,7 @@ window.addEventListener('DOMContentLoaded', () => {
         let storageType = row.insertCell();
         let monitorCount = row.insertCell();
 
+        // Populate table with information
         previousUser.innerHTML = element.previousUser;
         currentUser.innerHTML = element.currentUser;
         computerName.innerHTML = element.computerName;
@@ -73,7 +75,40 @@ window.addEventListener('DOMContentLoaded', () => {
         storage.innerHTML = element.storage;
         storageType.innerHTML = element.storageType;
         monitorCount.innerHTML = element.monitorCount;
+
+        // Create edit and delete buttons
+        let editButtonGroup = document.createElement('div');
+        let editButton = document.createElement('button');
+        let deleteButton = document.createElement('button');
+
+        // Setup edit and delete button container
+        editButtonGroup.className = 'btn-group';
+        editButtonGroup.setAttribute('role', 'group');
+        
+        // Setup edit button
+        editButton.type = 'button';
+        editButton.classList.add('btn', 'btn-primary', 'editButton');
+        editButton.innerHTML = '✏️';
+        
+        // Setup delete button
+        deleteButton.type = 'button';
+        deleteButton.classList.add('btn', 'btn-primary', 'deleteButton');
+        deleteButton.innerHTML = '❌';
+
+        // Delete button modal setup
+        deleteButton.setAttribute('data-bs-toggle', 'modal');
+        deleteButton.setAttribute('data-bs-target', '#deleteModal');
+        
+        // Add edit button group to table cell
+        editButtonGroup.appendChild(editButton);
+        editButtonGroup.appendChild(deleteButton);
+        editGroupCell.appendChild(editButtonGroup);
       });
+
+      // Define emit custom event to signal completed table population.
+      const customEvent = new Event('tablePopulated');
+      customEvent.target = tableBody;
+      window.dispatchEvent(customEvent);
     };
   };
 });
