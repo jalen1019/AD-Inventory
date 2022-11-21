@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <table class="table table-sm table-striped text-center">
+    <table id="dataTable" class="table table-sm table-striped text-center">
       <thead>
         <tr id="table-header-row">
           <th scope="col"></th>
@@ -73,7 +73,7 @@
               <div class="mb-3">
                 <label for="computerName" class="col-form-label">Computer Name</label>
                 <input type="text" class="form-control" id="computerName" placeholder="Computer Name" autocomplete="off" aria-describedby="validationServerComputerNameFeedback" required>
-                <div id="validationServerComputerNameFeedback" class="invalid-feedback">
+                <div id="invalidComputerName" class="invalid-feedback">
                   Please provide a computer name.
                 </div>
               </div>
@@ -132,6 +132,7 @@
       </div>
     </div>
     
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="./renderer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   </body>

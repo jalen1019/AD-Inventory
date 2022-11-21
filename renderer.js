@@ -115,7 +115,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
         
         //*
-        // Define emit custom event to signal completed table population.
+        // Define custom event to signal completed table population.
         const customEvent = new Event('tablePopulated');
         //customEvent.target = tableBody;
         window.dispatchEvent(customEvent);
@@ -168,19 +168,37 @@ document.getElementById('submitBtn').addEventListener('click', () => {
 
         //computer.monitorSize = document.querySelector('#monitorSize').value;
         
+        // Add storageType attribute to computer object.
         let storageTypeValue = document.querySelector('#storageType')
             .options[storageType.selectedIndex].text;
         computer.storageType = storageTypeValue;
-        
+
         const transaction = db.transaction(["computers"], "readwrite");
         const computerObjectStore = transaction.objectStore("computers");
-    
-        computerObjectStore.add(computer);
-        let modal = document.querySelector('#addRecord');
-        modal.querySelectorAll('input').forEach(element => {
-          element.value = '';
-        });
-        location.reload();
+        
+        // This will fail if a duplicate computer name is already registered.
+        let addition = computerObjectStore.add(computer);
+        addition.onsuccess = () => {
+          location.reload();
+        };
+
+        addition.onerror = (event) => {
+          // Show alert with error message
+          let errorMessageContainer = document.createElement('div');
+          let dismissButton = document.createElement('button');
+          errorMessageContainer.classList.add('alert', 'alert-warning', 'alert-dismissible', 'fade', 'show');
+          errorMessageContainer.setAttribute('role', 'alert');
+          errorMessageContainer.textContent = 'Error adding computer: ' + computer.computerName;
+          
+          dismissButton.setAttribute('type', 'button');
+          dismissButton.classList.add('btn-close');
+          dismissButton.setAttribute('data-bs-dismiss', 'alert');
+          dismissButton.setAttribute('aria-label', 'Close');
+          errorMessageContainer.append(dismissButton);
+
+          document.querySelector('#dataTable')
+            .insertAdjacentElement('beforebegin', errorMessageContainer);
+        };
     };
 });
 
