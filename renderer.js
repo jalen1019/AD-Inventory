@@ -152,29 +152,59 @@ document.getElementById('submitBtn').addEventListener('click', () => {
     let db;
 
     request.onsuccess = (event) => {
-        db = event.target.result;
+      db = event.target.result;
 
-        let computer = {
-            previousUser: document.querySelector('#previousUser').value,
-            currentUser: document.querySelector('#currentUser').value,
-            computerName: document.querySelector('#computerName').value,
-            modelName: document.querySelector('#modelName').value,
-            cpuModel: document.querySelector('#cpuModel').value,
-            ramSize: document.querySelector('#ramSize').value,
-            storage: document.querySelector('#storage').value,
-            monitorCount: document.querySelector('#monitorCount').value,
-            //monitorSize: document.querySelector('#monitorSize').value
-        }
+      let computer = {
+          previousUser: document.querySelector('#previousUser').value,
+          currentUser: document.querySelector('#currentUser').value,
+          computerName: document.querySelector('#computerName').value,
+          modelName: document.querySelector('#modelName').value,
+          cpuModel: document.querySelector('#cpuModel').value,
+          ramSize: document.querySelector('#ramSize').value,
+          storage: document.querySelector('#storage').value,
+          monitorCount: document.querySelector('#monitorCount').value,
+          //monitorSize: document.querySelector('#monitorSize').value
+      }
 
-        //computer.monitorSize = document.querySelector('#monitorSize').value;
+      //computer.monitorSize = document.querySelector('#monitorSize').value;
         
-        // Add storageType attribute to computer object.
-        let storageTypeValue = document.querySelector('#storageType')
-            .options[storageType.selectedIndex].text;
-        computer.storageType = storageTypeValue;
+      // Add storageType attribute to computer object.
+      let storageTypeValue = document.querySelector('#storageType')
+        .options[storageType.selectedIndex].text;
+      computer.storageType = storageTypeValue;
 
-        const transaction = db.transaction(["computers"], "readwrite");
-        const computerObjectStore = transaction.objectStore("computers");
+      const transaction = db.transaction(["computers"], "readwrite");
+      const computerObjectStore = transaction.objectStore("computers");
+
+      // Check if computer name already exists in database
+      let validationCheck = computerObjectStore.index('computerName').getKey(computer.computerName);
+
+      validationCheck.onsuccess = (event) => {
+        // Display new modal for overwriting existing entry
+        let addRecordModalEl = document.getElementById('addRecord');
+        let addRecordModal = bootstrap.Modal.getInstance(addRecordModalEl);
+        addRecordModal.hide();
+        let overwriteModal = new bootstrap.Modal(
+          document.getElementById('overwriteModal')
+        );
+        overwriteModal.show();
+
+        // Event handler for submission event
+        let overwriteSubmit = document.querySelector('#overwriteItemSubmit');
+        overwriteSubmit.addEventListener('click', () => {
+          let computerObjectStore = db
+            .transaction(['computers'], 'readwrite')
+            .objectStore('computers');
+          let updateRequest = computerObjectStore.get(event.target.result);
+            updateRequest.onsuccess = (event) => {
+              const data = event.target.result;
+
+              computerObjectStore.put(computer);
+            };
+        });
+      validationCheck.onerror = (event) => {
+        console.log(`Error: ${event.target.result}`);
+      };
         
         // This will fail if a duplicate computer name is already registered.
         let addition = computerObjectStore.add(computer);
@@ -186,9 +216,15 @@ document.getElementById('submitBtn').addEventListener('click', () => {
           // Show alert with error message
           let errorMessageContainer = document.createElement('div');
           let dismissButton = document.createElement('button');
-          errorMessageContainer.classList.add('alert', 'alert-warning', 'alert-dismissible', 'fade', 'show');
+          errorMessageContainer.classList.add(
+            'alert', 
+            'alert-warning', 
+            'alert-dismissible', 
+            'fade', 
+            'show'
+          );
           errorMessageContainer.setAttribute('role', 'alert');
-          errorMessageContainer.textContent = 'Error adding computer: ' + computer.computerName;
+          errorMessageContainer.textContent = `Database entry updated: ${computer.computerName}`;
           
           dismissButton.setAttribute('type', 'button');
           dismissButton.classList.add('btn-close');
@@ -199,6 +235,7 @@ document.getElementById('submitBtn').addEventListener('click', () => {
           document.querySelector('#dataTable')
             .insertAdjacentElement('beforebegin', errorMessageContainer);
         };
+      };
     };
 });
 
