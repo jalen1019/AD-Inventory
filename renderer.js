@@ -148,39 +148,43 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Event listener for computer submission
 document.getElementById('submitBtn').addEventListener('click', () => {
-    const request = indexedDB.open("ComputerDatabase", 1);
-    let db;
+  // Returns the input field values from the modal window.
+  let computer = {
+    previousUser: document.querySelector('#previousUser').value,
+    currentUser: document.querySelector('#currentUser').value,
+    computerName: document.querySelector('#computerName').value,
+    modelName: document.querySelector('#modelName').value,
+    cpuModel: document.querySelector('#cpuModel').value,
+    ramSize: document.querySelector('#ramSize').value,
+    storage: document.querySelector('#storage').value,
+    monitorCount: document.querySelector('#monitorCount').value,
+    //monitorSize: document.querySelector('#monitorSize').value
+  }
 
-    request.onsuccess = (event) => {
-      db = event.target.result;
+  //computer.monitorSize = document.querySelector('#monitorSize').value;
 
-      let computer = {
-          previousUser: document.querySelector('#previousUser').value,
-          currentUser: document.querySelector('#currentUser').value,
-          computerName: document.querySelector('#computerName').value,
-          modelName: document.querySelector('#modelName').value,
-          cpuModel: document.querySelector('#cpuModel').value,
-          ramSize: document.querySelector('#ramSize').value,
-          storage: document.querySelector('#storage').value,
-          monitorCount: document.querySelector('#monitorCount').value,
-          //monitorSize: document.querySelector('#monitorSize').value
-      }
+  // Add storageType attribute to computer object.
+  let storageTypeValue = document.querySelector('#storageType')
+    .options[storageType.selectedIndex].text;
+  computer.storageType = storageTypeValue;
 
-      //computer.monitorSize = document.querySelector('#monitorSize').value;
-        
-      // Add storageType attribute to computer object.
-      let storageTypeValue = document.querySelector('#storageType')
-        .options[storageType.selectedIndex].text;
-      computer.storageType = storageTypeValue;
+  // Open the database
+  const request = indexedDB.open("ComputerDatabase", 1);
+  let db;
+  let computerObjectStore;
 
-      const transaction = db.transaction(["computers"], "readwrite");
-      const computerObjectStore = transaction.objectStore("computers");
-
-      // Check if computer name already exists in database
-      let validationCheck = computerObjectStore.index('computerName').getKey(computer.computerName);
-
-      validationCheck.onsuccess = (event) => {
-        // Display new modal for overwriting existing entry
+  request.onsuccess = (event) => {
+    db = event.target.result;
+    const transaction = db.transaction(["computers"], "readwrite");
+    computerObjectStore = transaction.objectStore("computers");
+    
+    // Check for a duplicate computer name entry
+    computerObjectStore
+      .index('computerName')
+      .getKey(computer.computerName)
+      .onsuccess = (event) => {
+      if(event.target.result) {
+        // If there is a duplicate computername entry, show overwrite modal
         let addRecordModalEl = document.getElementById('addRecord');
         let addRecordModal = bootstrap.Modal.getInstance(addRecordModalEl);
         addRecordModal.hide();
@@ -188,55 +192,58 @@ document.getElementById('submitBtn').addEventListener('click', () => {
           document.getElementById('overwriteModal')
         );
         overwriteModal.show();
-
+  
         // Event handler for submission event
         let overwriteSubmit = document.querySelector('#overwriteItemSubmit');
-        overwriteSubmit.addEventListener('click', () => {
-          let computerObjectStore = db
-            .transaction(['computers'], 'readwrite')
-            .objectStore('computers');
-          let updateRequest = computerObjectStore.get(event.target.result);
-            updateRequest.onsuccess = (event) => {
-              const data = event.target.result;
 
-              computerObjectStore.put(computer);
+        overwriteSubmit.addEventListener('click', () => {
+          // delete existing item from database
+          computerObjectStore = db.transaction("computers", "readwrite").objectStore("computers");
+          computerObjectStore.delete(event.target.result);
+  
+          const requestUpdate = computerObjectStore.add(computer);
+          requestUpdate.onsuccess = (event) => { 
+            // Show alert with error message
+            let errorMessageContainer = document.createElement('div');
+            let dismissButton = document.createElement('button');
+            errorMessageContainer.classList.add(
+              'alert', 
+              'alert-warning', 
+              'alert-dismissible', 
+              'fade', 
+              'show'
+            );
+            errorMessageContainer.setAttribute('role', 'alert');
+            errorMessageContainer.textContent = `Database entry updated: ${computer.computerName}`;
+            
+            dismissButton.setAttribute('type', 'button');
+            dismissButton.classList.add('btn-close');
+            dismissButton.setAttribute('data-bs-dismiss', 'alert');
+            dismissButton.setAttribute('aria-label', 'Close');
+            errorMessageContainer.append(dismissButton);
+    
+            document.querySelector('#dataTable')
+              .insertAdjacentElement('beforebegin', errorMessageContainer);
+
             };
+          requestUpdate.onerror = (event) => {
+            //location.reload();
+            console.log(event);
+          };
         });
-      validationCheck.onerror = (event) => {
-        console.log(`Error: ${event.target.result}`);
-      };
-        
-        // This will fail if a duplicate computer name is already registered.
-        let addition = computerObjectStore.add(computer);
-        addition.onsuccess = () => {
+      } else {
+        console.log('unique computer name found');
+        let databaseUpdate = computerObjectStore.add(computer)
+        databaseUpdate.onsuccess = () => {
           location.reload();
         };
-
-        addition.onerror = (event) => {
-          // Show alert with error message
-          let errorMessageContainer = document.createElement('div');
-          let dismissButton = document.createElement('button');
-          errorMessageContainer.classList.add(
-            'alert', 
-            'alert-warning', 
-            'alert-dismissible', 
-            'fade', 
-            'show'
-          );
-          errorMessageContainer.setAttribute('role', 'alert');
-          errorMessageContainer.textContent = `Database entry updated: ${computer.computerName}`;
-          
-          dismissButton.setAttribute('type', 'button');
-          dismissButton.classList.add('btn-close');
-          dismissButton.setAttribute('data-bs-dismiss', 'alert');
-          dismissButton.setAttribute('aria-label', 'Close');
-          errorMessageContainer.append(dismissButton);
-
-          document.querySelector('#dataTable')
-            .insertAdjacentElement('beforebegin', errorMessageContainer);
+        databaseUpdate.onerror = () => {
+    
         };
-      };
+      }
+
     };
+  };
 });
 
 // Event handler for delete button click
