@@ -224,15 +224,12 @@ document.getElementById('submitBtn').addEventListener('click', () => {
     
             document.querySelector('#dataTable')
               .insertAdjacentElement('beforebegin', errorMessageContainer);
-
             };
           requestUpdate.onerror = (event) => {
-            //location.reload();
-            console.log(event);
+            location.reload();
           };
         });
       } else {
-        console.log('unique computer name found');
         let databaseUpdate = computerObjectStore.add(computer)
         databaseUpdate.onsuccess = () => {
           location.reload();
@@ -241,7 +238,6 @@ document.getElementById('submitBtn').addEventListener('click', () => {
     
         };
       }
-
     };
   };
 });
@@ -276,13 +272,9 @@ deleteModal.addEventListener('shown.bs.modal', (event) => {
                     .objectStore('computers')
                     .delete(keyRequest.result);
                 transaction.onsuccess = (event) => {
-                    console.log('deleted: ', computerName);
                 };
             };
         }
-        request.onerror = (event) => {
-            console.log(`error deleting ${computerName}: ${event}`);
-        };
         location.reload();
     });
 });
